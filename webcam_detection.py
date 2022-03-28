@@ -17,6 +17,7 @@ COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
 async def find_robbers(weapons, people, filtered_indices):
     for i in filtered_indices[0]: # Weapons
         for j in filtered_indices[1]: # People
+            # If the weapon is inside a rectangular a little bigger than the person
             if (weapons[i][0] > people[j][0] - people[j][2] * 0.75 and weapons[i][0] < people[j][0] + people[j][2] * 0.75) and (
                 weapons[i][1] > people[j][1] - people[j][3] * 0.75 and weapons[i][1] < people[j][1] + people[j][3] * 0.75):
                 print('ROBBER FOUND!!!', end=' ', flush=True)
