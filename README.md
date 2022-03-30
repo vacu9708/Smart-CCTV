@@ -3,4 +3,4 @@
 Deep learning YOLO algorithm, 
 
 ## Result
-![KakaoTalk_20220330_230242365](https://user-images.githubusercontent.com/67142421/160853247-6caea145-df43-483b-a922-66748d77f7f2.png)
+![KakaoTalk_20220330_230358244](https://user-images.githubusercontent.com/67142421/160853516-ec3b4795-f47c-4d42-9336-92e4e35ca479.jpg)
