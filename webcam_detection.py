@@ -1,29 +1,31 @@
 import cv2
 import numpy as np
 import asyncio
+import onnxruntime
 
 # Initilization
-LABELS = open('weights/coco.txt').read().strip().split("\n")
-model_path = 'weights/yolov5s.onnx'
-net = cv2.dnn.readNet(model_path)
+LABELS = open('weights/person_weapons.txt').read().strip().split("\n")
+model_path = 'weights/person_knife.onnx'
+net = onnxruntime.InferenceSession(model_path)
+'''net = cv2.dnn.readNet(model_path)
 layer_name = net.getLayerNames()
-layer_name = [layer_name[i - 1] for i in net.getUnconnectedOutLayers()]
+layer_name = [layer_name[i - 1] for i in net.getUnconnectedOutLayers()]'''
 YOLO_SIZE = 640
 # Box colors
 np.random.seed(4)
 COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8")
 #-----
 
-async def find_robbers(weapons, people, filtered_indices):
-    for i in filtered_indices[0]: # Weapons
-        for j in filtered_indices[1]: # People
-            # If the weapon is inside a rectangular a little bigger than the person
-            if (weapons[i][0] > people[j][0] - people[j][2] * 0.75 and weapons[i][0] < people[j][0] + people[j][2] * 0.75) and (
-                weapons[i][1] > people[j][1] - people[j][3] * 0.75 and weapons[i][1] < people[j][1] + people[j][3] * 0.75):
+async def find_robbers(people, weapons, filtered_indices):
+    for i in filtered_indices[0]: # People
+        for j in filtered_indices[1]: # Weapons
+            # If a weapon box overlaps a person box
+            if (weapons[j][0] > people[i][0] - people[i][2] * 0.75 and weapons[j][0] < people[i][0] + people[i][2] * 0.75) and (
+                weapons[j][1] > people[i][1] - people[i][3] * 0.75 and weapons[j][1] < people[i][1] + people[i][3] * 0.75):
                 print('ROBBER FOUND!!!', end=' ', flush=True)
                 return
 
-CONFIDENCE_THRESHOLD = 0.35
+CONFIDENCE_THRESHOLD = 0.3
 def make_final_boxes(image, boxes, probabilities, classIDs):
     (original_image_height, original_image_width) = image.shape[:2] # Take the height and width of the original image.
     
@@ -60,8 +62,12 @@ def image_into_neural_network(image):
     # Image normalization
     blob = cv2.dnn.blobFromImage(image, 1 / 255.0, (YOLO_SIZE, YOLO_SIZE), swapRB=True, crop=False)
 
-    net.setInput(blob)
-    return net.forward(layer_name)[0][0] # Return anchor boxes
+    input_name = net.get_inputs()[0].name
+    label_name = net.get_outputs()[0].name
+    return net.run([label_name], {input_name: blob.astype(np.float32)})[0][0]
+
+    '''net.setInput(blob)
+    return net.forward(layer_name)[0][0] # Return anchor boxes'''
 
 def initial_detection(image):
     # Initialize our lists of detected bounding boxes, confidences, and class IDs, respectively
@@ -82,13 +88,13 @@ def initial_detection(image):
 
         # Filter out weak predictions by ensuring the detected confidence is greater than the minimum confidence.
         if confidence > CONFIDENCE_THRESHOLD:
-            if classID == 43: # Knife detected
+            if classID == 0: # Person detected
                 (center_x, center_y, width, height) = anchor_box[0:4]
                 boxes[0].append([center_x, center_y, width, height])
                 probabilites[0].append(probability_of_most_likely_class)
                 classIDs[0].append(classID)
 
-            elif classID == 0: # Person detected
+            elif classID == 1: # Knife detected
                 (center_x, center_y, width, height) = anchor_box[0:4]
                 boxes[1].append([center_x, center_y, width, height])
                 probabilites[1].append(probability_of_most_likely_class)
