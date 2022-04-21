@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
-import asyncio
 import onnxruntime
+import imagezmq
+import requests
 
 # Initilization
 LABELS = open('weights/person_weapons.txt').read().strip().split("\n")
@@ -22,7 +23,9 @@ async def find_robbers(people, weapons, filtered_indices):
             # If a weapon box overlaps a person box
             if (weapons[j][0] > people[i][0] - people[i][2] * 0.75 and weapons[j][0] < people[i][0] + people[i][2] * 0.75) and (
                 weapons[j][1] > people[i][1] - people[i][3] * 0.75 and weapons[j][1] < people[i][1] + people[i][3] * 0.75):
-                print('ROBBER FOUND!!!', end=' ', flush=True)
+                print('!!!ROBBER FOUND!!!', end=' ', flush=True)
+                data = {"message": "Message from python"}
+                requests.post('http://localhost:3000/process/detection', json=data)
                 return
 
 CONFIDENCE_THRESHOLD = 0.3
@@ -35,7 +38,7 @@ def make_final_boxes(image, boxes, probabilities, classIDs):
     filtered_indices.append( cv2.dnn.NMSBoxes(boxes[0], probabilities[0], CONFIDENCE_THRESHOLD, NMS_THRESHOLD) )
     filtered_indices.append( cv2.dnn.NMSBoxes(boxes[1], probabilities[1], CONFIDENCE_THRESHOLD, NMS_THRESHOLD) )
 
-    asyncio.run(find_robbers(boxes[0], boxes[1], filtered_indices))
+    find_robbers(boxes[0], boxes[1], filtered_indices)
 
     (original_image_height, original_image_width) = image.shape[:2] # Take the height and width of the original image.
     # Factors to recover the image size to before being decreased to fit YOLO 640 size
@@ -102,18 +105,29 @@ def initial_detection(image):
         
     make_final_boxes(image, boxes, probabilites, classIDs)
 
-# Detection with the webcam
+# Detect the video from raspberry pi
+image_hub = imagezmq.ImageHub() # Prepare to receive video by socket
+while True:
+    if cv2.waitKey(1) >= 0:
+        break
+
+    rpi_name, image = image_hub.recv_image()
+    initial_detection(image)
+    cv2.imshow(rpi_name, image)
+    image_hub.send_reply(b'OK')
+
+'''# Turn on webcam
 video = cv2.VideoCapture(0) # 0 is a device number(Here it's the laptop camera)
 video.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 video.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 while True:
-    if cv2.waitKey(1) > -1: # End detecting by pressing Spacebar
+    if cv2.waitKey(1) > -1: # End detecting by pressing any key
         break
 
     ret, frame = video.read()
     initial_detection(frame)
     cv2.imshow("Capstone design STARS", frame)
 
-video.release()
-cv2.destroyAllWindows()
+video.release()'''
+#cv2.destroyAllWindows()

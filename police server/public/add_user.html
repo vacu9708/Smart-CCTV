@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Register page</h1><br>
+    <form method="post" action="/process/add_user"> <!--Wrap this code block as "post" -->
+        <table>
+            <tr>
+                <td><label>ID</label></td>
+                <td><input type="text" name="id"></td>
+            </tr>
+            <tr>
+                <td><label>Password</label></td>
+                <td><input type="password" name="password"></td>
+            </tr>
+            <tr>
+                <td><label>Name</label></td>
+                <td><input type="text" name="name"></td>
+            </tr>
+        </table>
+    </form>
+    <input type="submit" value="register">
+</body>
+</html>
