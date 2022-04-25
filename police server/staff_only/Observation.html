@@ -14,14 +14,30 @@
     <div>
         <h2 style="display:inline"> Message: </h2>
         <h2 style="display:inline" id="message"> </h2>
-    </div>
+    </div><br>
+    <img id="canvas">
+    
     <script src="/node_modules/socket.io/client-dist/socket.io.js"></script>
     <script>
-        var socket = io();
-        var message = document.getElementById('message');
-  
-        socket.on('message from python', (msg_from_python)=>{
-          message.textContent = msg_from_python;
+        var socketio = io();
+        var message_box = document.getElementById('message');
+        let message_buffer="";
+        setInterval(()=>{
+            if(message_box.textContent!='' && message_buffer=='')
+                message_box.textContent='';
+            message_buffer='';
+        }, 3000)
+
+        socketio.on('message from python', (message)=>{
+            message_box.textContent=message;
+            message_buffer = message;
+        });
+        socketio.on('streaming', (data)=>{
+            //var text_encoder = new TextDecoder("utf-8");
+            //data=text_encoder.decode(data);
+            frame="data:image/jpg;base64,"+data;
+            document.getElementById('canvas').src=frame;
+            //document.getElementById('message').textContent=data;
         });
       </script>
 </body>
