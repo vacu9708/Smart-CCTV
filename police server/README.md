@@ -13,5 +13,5 @@
 ![image](https://user-images.githubusercontent.com/67142421/162588709-9ba21214-f09e-4c55-ae35-ead172aaaa55.png)
 ![image](https://user-images.githubusercontent.com/67142421/162632571-cba7e7bb-9ede-4bc7-a0cb-e368b9640632.png)
 
-## Receiving messages from python and Live video streaming sent from python to node.js (socket communication)
+## Receiving messages and live video streaming sent from python to node.js (socket communication)
 ![KakaoTalk_20220426_050035315](https://user-images.githubusercontent.com/67142421/165168786-8e6dc31f-7498-485f-9edb-aab40fc02231.png)
