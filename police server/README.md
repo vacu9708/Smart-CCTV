@@ -3,7 +3,7 @@
 ## ID: police / password: 112
 ![image](https://user-images.githubusercontent.com/67142421/162588624-778981c8-9409-4353-a065-5b67aaf44668.png)
 
-## Prevetion of access without authentification(using HTTP session)
+## Prevetion of access without authentification
 ![image](https://user-images.githubusercontent.com/67142421/162632552-dd4392b5-7a5d-44c5-ab5f-11cef86d1977.png)
 
 ## Login failure
