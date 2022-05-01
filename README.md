@@ -7,8 +7,9 @@ https://github.com/tjdgur743/capstone
 * Node.js
 
 ## Structure
-1. A camera run by raspberry pi transfers live video streaming to the image processing computer (through socket communication)
-2. The video streaming is analyzed in python mainly through YOLO object detection
-3. The analyzed result is sent to the node.js police server (the video streaming is transferred with base64 encoding)
+The communication is done through socket communication
+1. A camera run by raspberry pi transfers live video streaming to the image processing computer.
+2. The video streaming is analyzed in python mainly through YOLO object detection.
+3. The analyzed result is sent to the node.js police server. (the video streaming is transferred with base64 encoding)
 
 [Police server to show the CCTV streaming](https://github.com/vacu9708/Smart-CCTV/tree/main/police%20server)
