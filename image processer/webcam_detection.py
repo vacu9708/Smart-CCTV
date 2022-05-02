@@ -1,15 +1,15 @@
-from xml.etree.ElementTree import tostring
 import cv2
 import numpy as np
 import onnxruntime
 import imagezmq
-#import requests
 import base64
 import socketio
+#import requests
 
 # Socket
 socket_io = socketio.Client()
-socket_io.connect('http://localhost:3000')
+#socket_io.connect('http://localhost:3000')
+socket_io.connect('http://59.17.63.221:3000')
 
 # Initilization
 LABELS = open('weights/person_weapons.txt').read().strip().split("\n")
@@ -33,8 +33,8 @@ def find_robbers(people, weapons, filtered_indices):
                 print('!!!ROBBER FOUND!!!', end=' ', flush=True)
                 message="Message from python"
                 socket_io.emit("message from python", message)
-                #message = {"message": "Message from python"}
-                #requests.post('http://localhost:3000/process/detection', json=data)
+                # message = {"message": "Message from python"}
+                # requests.post('http://localhost:3000/process/detection', json=message)
                 return
 
 CONFIDENCE_THRESHOLD = 0.3
@@ -114,8 +114,8 @@ def initial_detection(image):
         
     make_final_boxes(image, boxes, probabilites, classIDs)
 
-'''# Detect the video from raspberry pi
-image_hub = imagezmq.ImageHub() # Prepare to receive video by socket
+# Detect the video from raspberry pi
+'''image_hub = imagezmq.ImageHub() # Prepare to receive video by socket
 while True:
     if cv2.waitKey(1) >= 0:
         break
@@ -125,7 +125,7 @@ while True:
     initial_detection(frame)
     cv2.imshow(rpi_name, frame)
     result, encoded_frame = cv2.imencode('.jpg', frame)
-    image_as_text = base64.b64encode(encoded_frame)
+    image_as_text = base64.b64encode(encoded_frame).decode('utf-8')
     socket_io.emit('streaming', image_as_text)
 socket_io.disconnect()'''
 
@@ -140,10 +140,10 @@ while True:
 
     ret, frame = video.read()
     initial_detection(frame)
-    cv2.imshow("Capstone design STARS", frame)
+    #cv2.imshow("Capstone design STARS", frame)
     result, encoded_frame = cv2.imencode('.jpg', frame)
     image_as_text = base64.b64encode(encoded_frame).decode('utf-8')
-    socket_io.emit('streaming', image_as_text)
+    socket_io.emit('frame from python', image_as_text)
 video.release()
 
 cv2.destroyAllWindows()

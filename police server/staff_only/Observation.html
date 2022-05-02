@@ -32,12 +32,11 @@
             message_box.textContent=message;
             message_buffer = message;
         });
-        socketio.on('streaming', (data)=>{
+        socketio.on('image as text', (image_as_text)=>{
             //var text_encoder = new TextDecoder("utf-8");
             //data=text_encoder.decode(data);
-            frame="data:image/jpg;base64,"+data;
+            frame="data:image/jpg;base64,"+image_as_text;
             document.getElementById('canvas').src=frame;
-            //document.getElementById('message').textContent=data;
         });
       </script>
 </body>
