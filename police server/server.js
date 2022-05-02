@@ -40,7 +40,7 @@ backend.get("/Observation", (req, res) => {
 let authorized_ips=[];
 let user_ID = 'police'; let user_PW = '112';
 // Set what to do when a post request from '/process/login' arrives
-backend.post('/process/login', (req, res)=>{
+backend.post('/process/login', (request, response)=>{
     const param_ID = request.body.id;
     const param_PW = request.body.password;
     
