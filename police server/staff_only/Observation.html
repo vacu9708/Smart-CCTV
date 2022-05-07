@@ -19,6 +19,7 @@
     
     <script src="/node_modules/socket.io/client-dist/socket.io.js"></script>
     <script>
+        const alert_sound = new Audio('/public/alert.mp3');
         var socketio = io();
         var message_box = document.getElementById('message');
         let message_buffer="";
@@ -31,6 +32,8 @@
         socketio.on('message from python', (message)=>{
             message_box.textContent=message;
             message_buffer = message;
+            alert_sound.play()
+            //document.getElementById('alert sound').play()
         });
         socketio.on('image as text', (image_as_text)=>{
             //var text_encoder = new TextDecoder("utf-8");

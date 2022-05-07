@@ -4,12 +4,16 @@ import onnxruntime
 import imagezmq
 import base64
 import socketio
-#import requests
+import requests
+
+#requests.post('http://59.17.63.221:3000/process/python_login', json={'id': 'police', 'password':'112'})
+requests.post('http://192.168.0.27:3000/process/python_login', json={'id': 'police', 'password':'112'})
 
 # Socket
 socket_io = socketio.Client()
 #socket_io.connect('http://localhost:3000')
-socket_io.connect('http://59.17.63.221:3000')
+#socket_io.connect('http://59.17.63.221:3000')
+socket_io.connect('http://192.168.0.27:3000')
 
 # Initilization
 LABELS = open('weights/person_weapons.txt').read().strip().split("\n")
@@ -115,7 +119,7 @@ def initial_detection(image):
     make_final_boxes(image, boxes, probabilites, classIDs)
 
 # Detect the video from raspberry pi
-'''image_hub = imagezmq.ImageHub() # Prepare to receive video by socket
+image_hub = imagezmq.ImageHub() # Prepare to receive video by socket
 while True:
     if cv2.waitKey(1) >= 0:
         break
@@ -123,14 +127,14 @@ while True:
     rpi_name, frame = image_hub.recv_image()
     image_hub.send_reply(b'OK')
     initial_detection(frame)
-    cv2.imshow(rpi_name, frame)
+    #cv2.imshow(rpi_name, frame)
     result, encoded_frame = cv2.imencode('.jpg', frame)
     image_as_text = base64.b64encode(encoded_frame).decode('utf-8')
-    socket_io.emit('streaming', image_as_text)
-socket_io.disconnect()'''
+    socket_io.emit('frame from python', image_as_text)
+socket_io.disconnect()
 
 # Turn on webcam
-video = cv2.VideoCapture(0) # 0 is a device number(Here it's the laptop camera)
+'''video = cv2.VideoCapture(0) # 0 is a device number(Here it's the laptop camera)
 video.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 video.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
@@ -144,6 +148,6 @@ while True:
     result, encoded_frame = cv2.imencode('.jpg', frame)
     image_as_text = base64.b64encode(encoded_frame).decode('utf-8')
     socket_io.emit('frame from python', image_as_text)
-video.release()
+video.release()'''
 
 cv2.destroyAllWindows()
