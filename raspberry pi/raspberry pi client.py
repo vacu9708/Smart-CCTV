@@ -9,7 +9,7 @@ sender = imagezmq.ImageSender(connect_to='tcp://192.168.102.27:5555')
 rpi_name = socket.gethostname() # send RPi hostname with each image
 
 picam = VideoStream(usePiCamera=True,
-                    resolution=(640, 480),
+                    resolution=(800, 600),
                     framerate=30).start()
 time.sleep(2.0)  # allow camera sensor to warm up
 
