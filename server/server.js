@@ -98,7 +98,7 @@ socketio.on("connection", (socket)=>{
 		socketio.in("observation room").emit('image as text', image_as_text);
 	});
     socket.on('message from python', (message) => {
-		console.log('message: '+message);
+		//console.log('message: '+message);
 		socketio.in("observation room").emit('message from python', message);
 	});
 });
