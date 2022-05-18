@@ -23,6 +23,7 @@
 2. Put a timer to the detected car
 3. If the timer has gone off, notify the ilegal car with the date.
 
+### The area below is a legal parking lot but I considered it an illegal area.
 ## Cars being tracked with a timer
 ![image](https://user-images.githubusercontent.com/67142421/169097525-1330b23b-65eb-4002-b261-50ca7443b49b.png)
 
