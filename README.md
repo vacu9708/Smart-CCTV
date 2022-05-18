@@ -14,7 +14,7 @@
 # Structure
 ## Overal picture of how it works
 1. The camera transfers video frames to the image processing computer.
-2. The live video streaming is analyzed in python.
+2. The live video streaming is analyzed in python. ( 1st and 2nd processes can be replaced with a recorded video
 3. The analyzed result is sent to the Node.js server. (with base64 encoding, socket communication)
 
 ## How illegally parked cars are detected
