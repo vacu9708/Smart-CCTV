@@ -13,14 +13,14 @@
 * Node.js server for notifying
 
 # Structure
-## Overal picture of how it works
+## Overall picture of how it works
 1. The camera transfers video frames to the image processing computer.
-2. The live video streaming is analyzed in python. ( 1st and 2nd processes can be replaced with a recorded video
+2. The live video streaming is analyzed in python. (1st and 2nd processes can be replaced with a recorded video)
 3. The analyzed result is sent to the Node.js server. (with base64 encoding, socket communication)
 
 ## How illegally parked cars are detected
 1. Detect a car
-2. Put a timer to the detected car
+2. Put a timer on the detected car
 3. If the timer has gone off, notify the ilegal car with the date.
 
 ### The area below is a legal parking lot but I considered it an illegal area.
