@@ -10,7 +10,7 @@
 * Raspberry pi, Camera module
 * YOLOv5 object detection algorithm to detect objects
 * Deepsort algorithm to track detected objects
-* Node.js server for users
+* Node.js server for notifying
 
 # Structure
 ## Overal picture of how it works
