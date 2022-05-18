@@ -1,9 +1,10 @@
 # Smart-CCTV
+# 📹[Video](https://youtu.be/eHqh4qVO2DE)
 
 ![image](https://user-images.githubusercontent.com/67142421/169100092-8fe7e05a-f1f8-46b7-8cac-38f9601638d2.png)
-> As you can see, illegal parking causes great convenience.
+> As you can see, illegal parking causes great inconvenience.
 > The enforcement of all the illegally parked high and low is very difficult given the limited number of officials
-> So, automating the enforcement of illegally parked cars is in an great need.
+> So, automating the enforcement of illegally parked cars is a great need.
 
 ## Things used
 * Raspberry pi, Camera module
