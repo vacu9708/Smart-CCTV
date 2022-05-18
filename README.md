@@ -30,6 +30,8 @@
 ![image](https://user-images.githubusercontent.com/67142421/169099054-411c741f-8c61-4bf3-a439-eccaf6463632.png)
 
 ## Node.js web page
-![image](https://user-images.githubusercontent.com/67142421/169098899-7b85fd9d-0cba-445e-aa91-fa897e9fca13.png)
+### Login page
+![image](https://user-images.githubusercontent.com/67142421/169166225-43386735-ee16-492b-ab07-1ab8199e0121.png)
 
-### [Police server to show the CCTV streaming](https://github.com/vacu9708/Smart-CCTV/tree/main/police%20server)
+### Observation page
+![image](https://user-images.githubusercontent.com/67142421/169098899-7b85fd9d-0cba-445e-aa91-fa897e9fca13.png)
