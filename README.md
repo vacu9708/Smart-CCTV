@@ -12,7 +12,6 @@
 * Deepsort algorithm to track detected objects
 * Node.js server for notifying
 
-# Structure
 ## Overall picture of how it works
 1. The camera transfers video frames to the image processing computer.
 2. The live video streaming is analyzed in python. (1st and 2nd processes can be replaced with a recorded video)
