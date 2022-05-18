@@ -20,11 +20,15 @@ from yolov5.utils.plots import Annotator
 from deep_sort.utils.parser import get_config
 from deep_sort.deep_sort import DeepSort
 
-requests.post('http://localhost:3000/process/python_login', json={'id': 'police', 'password':'112'})
+#requests.post('http://localhost:3000/process/python_login', json={'id': 'police', 'password':'112'})
+requests.post('http://59.17.63.221:3000/process/python_login', json={'id': 'police', 'password':'112'})
+#requests.post('http://192.168.0.27:3000/process/python_login', json={'id': 'police', 'password':'112'}) # hotspot
 
 # Socket
 socket_io = socketio.Client()
-socket_io.connect('http://localhost:3000')
+#socket_io.connect('http://localhost:3000')
+socket_io.connect('http://59.17.63.221:3000')
+#socket_io.connect('http://192.168.0.27:3000') # hotspot
 import timer_alarm
 timer_alarm.socket_io=socket_io
 
@@ -34,7 +38,8 @@ device = select_device('')
 model = DetectMultiBackend(yolo_model, device=device, dnn='')
 stride, names, pt = model.stride, model.names, model.pt
 img_size = check_img_size([640, 640], s=stride)  # check image size
-classes=[2,7] # car:2, truck:7 67: phone
+names = model.module.names if hasattr(model, 'module') else model.names # Get names and colors
+classes=[67,2,7] # car:2, truck:7 67: phone
 
 # Colors
 np.random.seed(4)
@@ -43,7 +48,7 @@ COLORS = np.random.randint(0, 255, size=(len(classes), 3), dtype='uint8')
 # Dataloader
 cam=False
 #source='0'
-source="resource/parking_lot_480p.mp4"
+source="resource/parking_lot.mp4"
 if cam:
     cudnn.benchmark = True  # set True to speed up constant image size inference
     #input = LoadStreams(source, img_size=img_size, stride=stride, auto=pt)
@@ -55,7 +60,6 @@ else:
 cfg = get_config()
 config_deepsort="deep_sort/configs/deep_sort.yaml"
 cfg.merge_from_file(config_deepsort)
-
 deepsort=DeepSort(
                 'osnet_x0_50', #cfg.DEEPSORT.MODEL_TYPE,
                 device,
@@ -63,13 +67,12 @@ deepsort=DeepSort(
                 max_iou_distance=0.7,#cfg.DEEPSORT.MAX_IOU_DISTANCE,
                 max_age=30,#cfg.DEEPSORT.MAX_AGE,
                 n_init=cfg.DEEPSORT.N_INIT, nn_budget=cfg.DEEPSORT.NN_BUDGET)
-outputs = []
 
-timer_limit=10
-names = model.module.names if hasattr(model, 'module') else model.names # Get names and colors
-illegally_parked_cars=[]
+timer_limit=15
 
 # Run tracking
+outputs = []
+illegally_parked_cars=[]
 model.warmup(imgsz=(1, 3, *img_size))
 for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
     image = torch.from_numpy(image).to(device)
@@ -113,7 +116,7 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
                 elapsed_time=output[7]
                 #stopped='Stopped' if output[8]==1 else ''
                 c = int(cls)  # integer class
-                label = f'{id:.0f}/{names[c]}/{conf:.1f}/{elapsed_time:0.0f}sec'#/{stopped}'
+                label = f'{id:.0f}/{names[c]}/{conf*100:.1f}%/{elapsed_time:0.0f}sec'#/{stopped}'
                 color = [ int(c) for c in COLORS[c%len(classes)] ]
                 annotator.box_label(bboxes, label, color=color)
         else: # No detection
@@ -129,12 +132,12 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
         #period=time.time()-start_time
         #fps=math.ceil(1/period if period>0.01 else 0.01)
         #cv2.putText(image0, 'FPS: {}'.format(str(fps)), (0,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 1)
-        cv2.imshow('capstone', image0)
+        '''cv2.imshow('capstone', image0)
         if cv2.waitKey(1)>-1:
-            exit
-        '''result, encoded_frame = cv2.imencode('.jpg', image0)
-        image_as_text = base64.b64encode(encoded_frame).decode('utf-8')
-        socket_io.emit('frame from python', image_as_text)'''
+            exit'''
+        result, encoded_frame = cv2.imencode('.jpg', image0)
+        image_as_text = base64.b64encode(encoded_frame)#.decode('utf-8')
+        socket_io.emit('frame from python', image_as_text)
         #-----
                 
         '''if keyboard.is_pressed('space'): # Turn off if any key pressed
