@@ -21,14 +21,10 @@ from deep_sort.utils.parser import get_config
 from deep_sort.deep_sort import DeepSort
 
 #requests.post('http://localhost:3000/process/python_login', json={'id': 'police', 'password':'112'})
-requests.post('http://59.17.63.221:3000/process/python_login', json={'id': 'police', 'password':'112'})
-#requests.post('http://192.168.0.27:3000/process/python_login', json={'id': 'police', 'password':'112'}) # hotspot
 
 # Socket
 socket_io = socketio.Client()
 #socket_io.connect('http://localhost:3000')
-socket_io.connect('http://59.17.63.221:3000')
-#socket_io.connect('http://192.168.0.27:3000') # hotspot
 import timer_alarm
 timer_alarm.socket_io=socket_io
 
