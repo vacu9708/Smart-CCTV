@@ -86,10 +86,9 @@ class Track:
         self._n_init = n_init
         self._max_age = max_age
 
-        if timer_limit:
-            self.timer_alarm=timer_alarm.Timer(timer_limit)
-            #self.stopped=False
-            #self.prev_mean=mean
+        # To know how long stopped
+        self.prev_mean=mean # For previous position
+        self.timer_alarm=timer_alarm.Timer(timer_limit)
 
     def to_tlwh(self):
         """Get current position in bounding box format `(top left x, top left y,
@@ -112,7 +111,7 @@ class Track:
         return ret
 
     def to_tlbr(self):
-        """Get kf estimated current position in bounding box format `(min x, miny, max x,
+        """Get kf estimated current position in bounding box format `(min x, min y, max x,
         max y)`.
 
         Returns
@@ -158,8 +157,6 @@ class Track:
         self.conf = conf
         self.features.append(detection.feature)
         self.class_id = class_id.int()
-        if timer_limit:
-            self.prev_mean=self.mean
         self.mean, self.covariance = kf.update(self.mean, self.covariance, detection.to_xyah())
         self.hits += 1
         self.time_since_update = 0

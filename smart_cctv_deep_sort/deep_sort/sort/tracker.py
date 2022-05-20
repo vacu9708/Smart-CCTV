@@ -172,6 +172,7 @@ class Tracker:
         unmatched_tracks = list(set(unmatched_tracks_a + unmatched_tracks_b))
         return matches, unmatched_tracks, unmatched_detections
 
+    # To split tracks according to the class, modify this.
     def _initiate_track(self, detection, class_id, conf, timer_limit):
         mean, covariance = self.kf.initiate(detection.to_xyah())
         self.tracks.append(Track(

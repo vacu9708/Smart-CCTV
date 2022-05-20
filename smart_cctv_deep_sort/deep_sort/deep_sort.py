@@ -53,7 +53,6 @@ class DeepSort(object):
         self.tracker = Tracker(
             metric, max_iou_distance=max_iou_distance, max_age=max_age, n_init=n_init)
 
-    prev_x1=prev_y1=None
     def update(self, bbox_xywh, confidences, classes, ori_img, timer_limit, illegaly_parked_cars):
         self.height, self.width = ori_img.shape[:2]
         # generate detections
@@ -82,23 +81,22 @@ class DeepSort(object):
             class_id = track.class_id
             conf = track.conf
             elapsed_time=track.timer_alarm.elapsed_time
-            #stopped_object=track.timer_alarm.stopped_object
-            outputs.append(np.array([x1, y1, x2, y2, track_id, class_id, conf, elapsed_time]))#, stopped_object]))
 
             if timer_limit:
-                # Check if this object has stopped
-                '''prev_box = track.to_tlwh_prev()
+                prev_box = track.to_tlwh_prev()
                 dx=abs(prev_box[0]-x1)
                 dy=abs(prev_box[1]-y1)
-                if dx+dy<5:
+                if dx+dy<3: # If stopped
                     track.timer_alarm.stopped_object=True
                 else:
-                    track.timer_alarm.stopped_object=False'''
+                    track.timer_alarm.stopped_object=False
 
                 # If the timer on this track has ended
                 if track.timer_alarm.timer_ended:
                     track.timer_alarm.alarm()
                     illegaly_parked_cars.append(np.array([(x1+x2)/2, (y1+y2)/2, track_id], int))
+            outputs.append(np.array([x1, y1, x2, y2, track_id, class_id, conf, elapsed_time, track.timer_alarm.stopped_object]))
+            track.prev_mean=track.mean
         if len(outputs) > 0:
             outputs = np.stack(outputs, axis=0)
         return outputs

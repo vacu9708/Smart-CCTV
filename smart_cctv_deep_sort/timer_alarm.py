@@ -11,14 +11,14 @@ class Timer:
 
     elapsed_time=0
     timer_ended=False
-    how_long_stopped=0
     stopped_object=False
+    how_long_stopped=0
     def timer(self, secs):
         for i in range(secs):
-            '''if self.stopped_object==True:
+            if self.stopped_object==True:
                 self.how_long_stopped+=1
             if self.how_long_stopped>0.1*secs:
-                self.timer_ended=True'''
+                self.timer_ended=True
             if self.timer_ended==True:
                 return
             time.sleep(1)

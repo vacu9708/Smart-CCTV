@@ -39,7 +39,7 @@ model = DetectMultiBackend(yolo_model, device=device, dnn='')
 stride, names, pt = model.stride, model.names, model.pt
 img_size = check_img_size([640, 640], s=stride)  # check image size
 names = model.module.names if hasattr(model, 'module') else model.names # Get names and colors
-classes=[67,2,7] # car:2, truck:7 67: phone
+classes=[2,7] # car:2, truck:7, 67: phone
 
 # Colors
 np.random.seed(4)
@@ -109,16 +109,16 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
 
             # Draw boxes for visualization
             for j, (output) in enumerate(outputs):
-                bboxes = output[0:4]
+                bbox = output[0:4]
                 id = output[4]
                 cls = output[5] # class
                 conf = output[6] # confidencce
                 elapsed_time=output[7]
-                #stopped='Stopped' if output[8]==1 else ''
+                stopped='Stopped' if output[8]==True else ''
                 c = int(cls)  # integer class
-                label = f'{id:.0f}/{names[c]}/{conf*100:.1f}%/{elapsed_time:0.0f}sec'#/{stopped}'
+                label = f'{names[c]} {id:.0f}/{conf*100:.1f}%/{elapsed_time:0.0f}sec/{stopped}'
                 color = [ int(c) for c in COLORS[c%len(classes)] ]
-                annotator.box_label(bboxes, label, color=color)
+                annotator.box_label(bbox, label, color=color)
         else: # No detection
             deepsort.increment_ages()
             #LOGGER.info('No detections')
