@@ -6,7 +6,7 @@
 > The enforcement of all the unlawfully parked cars is very difficult given the limited number of Public Officials and the vast number of vehicles spread out everywhere.
 > So, automating the enforcement of illegally parked cars is a great need.
 
-## Things used
+## Main things used
 * Raspberry pi, Camera module
 * YOLOv5 object detection algorithm to detect objects
 * Deepsort algorithm to track detected objects
