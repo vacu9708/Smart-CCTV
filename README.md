@@ -20,7 +20,7 @@
 ## How illegally parked cars are detected
 1. Detect a car
 2. Put a timer on the detected car
-3. If the timer has gone off, notify the illegal car with the date.
+3. If the timer has gone off because the car has stopped for too long, notify the illegal car with the date.
 
 ### The area below is a legal parking lot but I considered it an illegal area.
 ## Cars being tracked with a timer
