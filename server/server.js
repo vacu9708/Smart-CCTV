@@ -23,15 +23,16 @@ server.use(session({
     saveUninitialized: true,
 }));
 
-// configuration of get request
+// Configurations of requests
 server.get("/", (req, res) => {
     res.redirect('/public/Login.html')
 })
+
+let authorized_ips=[]; // Hash map will be much better!
 server.get("/Observation", (req, res) => {
     if(req.session.user){ // If logged in
+        authorized_ips.push(req.ip)
         res.sendFile(__dirname+'/staff_only/Observation.html');
-        if(authorized_ips.findIndex((element)=>{return req.ip})!=-1) // Recover the authorized ip lost on refresh
-            authorized_ips.push(req.ip)
         //console.log('('+req.ip+') logged in to the staff page')
     }
     else
@@ -39,7 +40,6 @@ server.get("/Observation", (req, res) => {
     //res.end()
 });
 
-let authorized_ips=[]; // Hash map will be much better!
 let user_ID = 'police'; let user_PW = '112';
 // Set what to do when a post request from '/process/login' arrives
 server.post('/process/login', (req, res)=>{
@@ -53,7 +53,6 @@ server.post('/process/login', (req, res)=>{
                 authorized: true
             };
         }
-        authorized_ips.push(req.ip);
         res.send("<script>alert('Login successful'); location.href='/Observation';</script>");
         //process.stdout.write('session : '); console.log(req.session.user);
     }
@@ -70,7 +69,8 @@ server.post("/process/python_login", (req, res)=>{
         //console.log('('+req.ip+') logged in from python');
         authorized_ips.push(req.ip);
     }
-    else console.log('Login failed')
+    else 
+        console.log('Login failed')
     res.end()
 })
 
@@ -80,7 +80,7 @@ server.post("/process/python_login", (req, res)=>{
 // })
 
 socketio.on("connection", (socket)=>{
-    if(authorized_ips.findIndex((element)=>{return element==socket.conn.remoteAddress})!=-1){ // Authentification
+    if(authorized_ips.findIndex((element)=>{return element==socket.conn.remoteAddress})!=-1){ // If found the ip
         socket.join("observation room");
         console.log("("+socket.conn.remoteAddress+") connected to the socket room");
     }
@@ -89,8 +89,8 @@ socketio.on("connection", (socket)=>{
 
     socket.on("disconnect", (reason)=>{ // Remove disconnected users from authorized_ips
         let ip_i=authorized_ips.findIndex((element)=>element==socket.conn.remoteAddress)
-        if(ip_i!=-1)
-            authorized_ips.splice(ip_i, 1)
+        if(ip_i!=-1) // If found the ip
+            authorized_ips.splice(ip_i, 1) // Delete the ip of the leaving user
         console.log("("+socket.conn.remoteAddress+") disconnected from the socket room");
     })
 
