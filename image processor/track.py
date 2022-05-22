@@ -20,11 +20,11 @@ from yolov5.utils.plots import Annotator
 from deep_sort.utils.parser import get_config
 from deep_sort.deep_sort import DeepSort
 
-#requests.post('http://localhost:3000/process/python_login', json={'id': 'police', 'password':'112'})
-
-# Socket
+# Communication
+requests.post('http://localhost:3000/process/python_login', json={'id': 'police', 'password':'112'})
 socket_io = socketio.Client()
-#socket_io.connect('http://localhost:3000')
+socket_io.connect('http://localhost:3000')
+
 import timer_alarm
 timer_alarm.socket_io=socket_io
 
@@ -44,7 +44,7 @@ COLORS = np.random.randint(0, 255, size=(len(classes), 3), dtype='uint8')
 # Dataloader
 cam=False
 #source='0'
-source="resource/parking_lot.mp4"
+source="resource/parking_lot2.mp4"
 if cam:
     cudnn.benchmark = True  # set True to speed up constant image size inference
     #input = LoadStreams(source, img_size=img_size, stride=stride, auto=pt)
@@ -61,14 +61,12 @@ deepsort=DeepSort(
                 device,
                 max_dist=0.2,#cfg.DEEPSORT.MAX_DIST,
                 max_iou_distance=0.7,#cfg.DEEPSORT.MAX_IOU_DISTANCE,
-                max_age=30,#cfg.DEEPSORT.MAX_AGE,
+                max_age=90,#cfg.DEEPSORT.MAX_AGE,
                 n_init=cfg.DEEPSORT.N_INIT, nn_budget=cfg.DEEPSORT.NN_BUDGET)
-
-timer_limit=15
 
 # Run tracking
 outputs = []
-illegally_parked_cars=[]
+parked_cars=[]
 model.warmup(imgsz=(1, 3, *img_size))
 for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
     image = torch.from_numpy(image).to(device)
@@ -101,18 +99,18 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
             clss = detection[:, 5] # class
 
             # Pass a detection to deepsort
-            outputs = deepsort.update(xywhs.cpu(), confs.cpu(), clss.cpu(), image0, timer_limit, illegally_parked_cars)
+            outputs = deepsort.update(xywhs.cpu(), confs.cpu(), clss.cpu(), image0, parked_cars)
 
             # Draw boxes for visualization
             for j, (output) in enumerate(outputs):
                 bbox = output[0:4]
                 id = output[4]
                 cls = output[5] # class
-                conf = output[6] # confidencce
+                #conf = output[6] # confidencce
                 elapsed_time=output[7]
                 stopped='Stopped' if output[8]==True else ''
                 c = int(cls)  # integer class
-                label = f'{names[c]} {id:.0f}/{conf*100:.1f}%/{elapsed_time:0.0f}sec/{stopped}'
+                label = f'{id:.0f} {names[c]}/{elapsed_time:0.0f}sec/{stopped}'
                 color = [ int(c) for c in COLORS[c%len(classes)] ]
                 annotator.box_label(bbox, label, color=color)
         else: # No detection
@@ -120,9 +118,9 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
             #LOGGER.info('No detections')
 
         image0 = annotator.result()
-        for illegally_parked_car in illegally_parked_cars:
-            cv2.putText(image0, f'ILEGAL: {illegally_parked_car[2]}', illegally_parked_car[0:2], 
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,0,255), 2)
+        for parked_car in parked_cars:
+            cv2.putText(image0, f'ILEGAL: {parked_car[2]}', parked_car[0:2], 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,0,255), 2)
 
         # Stream results through webcam
         #period=time.time()-start_time
@@ -139,7 +137,7 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
         '''if keyboard.is_pressed('space'): # Turn off if any key pressed
                 exit()'''
         if keyboard.is_pressed('esc'): # Enter to reset
-            illegally_parked_cars.clear()
+            parked_cars.clear()
             deepsort=DeepSort(
                 'osnet_x0_50',#cfg.DEEPSORT.MODEL_TYPE,
                 device,

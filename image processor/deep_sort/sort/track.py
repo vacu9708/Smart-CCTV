@@ -68,7 +68,7 @@ class Track:
     """
 
     def __init__(self, mean, covariance, track_id, class_id, conf, n_init, max_age,
-                 feature=None, timer_limit=0):
+                 feature=None):
         self.mean = mean
         self.covariance = covariance
         self.track_id = track_id
@@ -86,9 +86,9 @@ class Track:
         self._n_init = n_init
         self._max_age = max_age
 
-        # To know how long stopped
+        # Custom code
         self.prev_mean=mean # For previous position
-        self.timer_alarm=timer_alarm.Timer(timer_limit)
+        self.timer_alarm=timer_alarm.Timer()
 
     def to_tlwh(self):
         """Get current position in bounding box format `(top left x, top left y,
@@ -142,7 +142,7 @@ class Track:
         self.mean, self.covariance = kf.predict(self.mean, self.covariance)
         self.increment_age()
 
-    def update(self, kf, detection, class_id, conf, timer_limit):
+    def update(self, kf, detection, class_id, conf):
         """Perform Kalman filter measurement update step and update the feature
         cache.
 

@@ -58,7 +58,7 @@ class Tracker:
             track.increment_age()
             track.mark_missed()
 
-    def update(self, detections, classes, confidences, timer_limit):
+    def update(self, detections, classes, confidences, parked_cars):
         """Perform measurement update and track management.
 
         Parameters
@@ -73,24 +73,31 @@ class Tracker:
         # Update track set.
         for track_idx, detection_idx in matches:
             self.tracks[track_idx].update(
-                self.kf, detections[detection_idx], classes[detection_idx], confidences[detection_idx], timer_limit)
+                self.kf, detections[detection_idx], classes[detection_idx], confidences[detection_idx])
         for track_idx in unmatched_tracks: # Tracks whose object have disappeared
             self.tracks[track_idx].mark_missed()
         for detection_idx in unmatched_detections: # Objects without a track that need a tracker
             self._initiate_track(detections[detection_idx], classes[detection_idx].item(), 
-            confidences[detection_idx].item(), timer_limit)
+            confidences[detection_idx].item())
 
-        if timer_limit:
+        # Custom code
             # Delete lost objects and their timer
-            i=0
-            while i<len(self.tracks):
-                if self.tracks[i].is_deleted():
-                    self.tracks[i].timer_alarm.timer_ended=True
-                    del self.tracks[i]
-                    continue
-                i+=1
-        else:
-            self.tracks = [t for t in self.tracks if not t.is_deleted()]
+        i=0
+        while i<len(self.tracks):
+            if self.tracks[i].is_deleted():
+                if self.tracks[i].timer_alarm.timer_ended:
+                    message="Illegal parking removed, num: "+str(len(parked_cars))+"/id: "+str(self.tracks[i].track_id)
+                    self.tracks[i].timer_alarm.notice(message)
+
+                self.tracks[i].timer_alarm.timer_ended=True
+                for j, illegally_parked_car in enumerate(parked_cars): # Remove the parked car from list
+                    if illegally_parked_car[2]==self.tracks[i].track_id:
+                        del parked_cars[j]
+                del self.tracks[i]
+                continue
+            i+=1
+
+        #self.tracks = [t for t in self.tracks if not t.is_deleted()]
 
         # Update distance metric.
         active_targets = [t.track_id for t in self.tracks if t.is_confirmed()]
@@ -173,9 +180,9 @@ class Tracker:
         return matches, unmatched_tracks, unmatched_detections
 
     # To split tracks according to the class, modify this.
-    def _initiate_track(self, detection, class_id, conf, timer_limit):
+    def _initiate_track(self, detection, class_id, conf):
         mean, covariance = self.kf.initiate(detection.to_xyah())
         self.tracks.append(Track(
             mean, covariance, self._next_id, class_id, conf, self.n_init, self.max_age,
-            detection.feature, timer_limit))
+            detection.feature))
         self._next_id += 1
