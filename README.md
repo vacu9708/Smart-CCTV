@@ -9,7 +9,7 @@
 ## Main things used in this project
 * Raspberry pi, Camera module
 * YOLOv5 object detection algorithm to detect objects
-* Deepsort algorithm to track detected objects
+* [Deepsort](https://github.com/mikel-brostrom/Yolov5_StrongSORT_OSNet) algorithm to track detected objects
 * Node.js server for notifying
 
 ## Overall picture of how it works
