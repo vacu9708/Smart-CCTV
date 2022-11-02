@@ -1,4 +1,4 @@
-# Parking space information notifier(university graduation project)
+# Parking lot information notifier(university graduation project)
 
 # What is this system
 This system tracks cars and shows information for parking with LEDs in a parking lot.
@@ -21,18 +21,25 @@ The time taken for the LED to be orange when the car approaches a parking space 
 When the headlight is turned on, the LED becomes yellow.<br>
 The time taken for the LED to be yellow after the headlight is turned on can be adjusted to prevent cars from waiting for the parking space to be available for too long. 
 
-## Main things used in this project
+# Main things used in this project
 * Raspberry pi, Camera module to take the video of the parking lot
 * Arduino to control LEDs and a bluetooth module to receive LED signals from the image processing server
 * YOLOv5 object detection algorithm to detect objects
 * [Deepsort](https://github.com/mikel-brostrom/Yolov5_StrongSORT_OSNet) algorithm to track detected objects
 
-## Video processing performed in python
+# Video processing performed in python
 ![image](https://user-images.githubusercontent.com/67142421/199557014-d4a0cc30-5356-413c-bb54-4b832525a188.png)
 
-## Flow chart
+# Flow chart
 ![image](https://user-images.githubusercontent.com/67142421/199558323-6e1d6e53-c543-4073-bb08-05d97789bbb2.png)
 
-## Hardware
+# Hardware
 ![image](https://user-images.githubusercontent.com/67142421/199539868-8f2fd9f0-d421-45e3-99ce-8e05fc81f2de.png)
 ![image](https://user-images.githubusercontent.com/67142421/199559497-c5a9cc73-c009-4ca5-8570-1089452acc06.png)
+![image](https://user-images.githubusercontent.com/67142421/199567887-b6c41437-8cea-46c2-967a-4ce99fd23e88.png)
+
+
+# Team members and roles
+- 양영식: bluetooth communication for LEDs and car controlling, raspberry pi, algorithm for cars going out, YOLO image training
+- 이승종: Algorithm for situations of green, red, and orange LED
+- 김성혁: Hardware making
