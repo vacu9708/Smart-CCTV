@@ -1,4 +1,5 @@
 # Parking lot information notifier(university graduation project)
+### 📷[Video](https://youtu.be/ZB2DopuROoM)
 
 # What is this system
 This system tracks cars and shows information for parking with LEDs in a parking lot.
@@ -30,14 +31,13 @@ The time taken for the LED to be yellow after the headlight is turned on can be 
 # Video processing performed in python
 ![image](https://user-images.githubusercontent.com/67142421/199557014-d4a0cc30-5356-413c-bb54-4b832525a188.png)
 
-# Flow chart
-![image](https://user-images.githubusercontent.com/67142421/199558323-6e1d6e53-c543-4073-bb08-05d97789bbb2.png)
-
 # Hardware
 ![image](https://user-images.githubusercontent.com/67142421/199539868-8f2fd9f0-d421-45e3-99ce-8e05fc81f2de.png)
 ![image](https://user-images.githubusercontent.com/67142421/199559497-c5a9cc73-c009-4ca5-8570-1089452acc06.png)
 ![image](https://user-images.githubusercontent.com/67142421/199567887-b6c41437-8cea-46c2-967a-4ce99fd23e88.png)
 
+# Flow chart
+![image](https://user-images.githubusercontent.com/67142421/199558323-6e1d6e53-c543-4073-bb08-05d97789bbb2.png)
 
 # Team members and roles
 - 양영식: bluetooth communication for LEDs and car controlling, raspberry pi, algorithm for cars going out, YOLO image training
