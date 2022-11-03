@@ -1,7 +1,7 @@
 # Parking lot information notifier(university graduation project)
 ### 📷[Video](https://youtu.be/ZB2DopuROoM)
 
-# What is this system
+# What this system is
 This system tracks cars and shows information for parking with LEDs in a parking lot.
 It aims to decrease the time waste when looking for a parking space.
 
@@ -14,7 +14,7 @@ It aims to decrease the time waste when looking for a parking space.
 # Situations
 ## A situation where a car is parking
 ![image](https://user-images.githubusercontent.com/67142421/199556685-d66c4c98-d992-4467-af05-c06ce614fa1f.png)
-When LED of the parking space closest to the car becomes orange.<br>
+The LED of the parking space closest to the car becomes orange.<br>
 The time taken for the LED to be orange when the car approaches a parking space can be adjusted to exclude cars that are just passing. 
 
 ## A situation where a car is going out
