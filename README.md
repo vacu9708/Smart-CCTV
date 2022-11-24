@@ -1,4 +1,6 @@
 # Parking lot information notifier(university graduation project)
+![image](https://user-images.githubusercontent.com/67142421/203692196-6da73870-6f47-4937-bd90-6341ae2ac4bf.png)
+
 ### 📷[Video](https://youtu.be/ZB2DopuROoM)
 
 # What this system is
