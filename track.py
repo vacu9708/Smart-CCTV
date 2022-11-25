@@ -22,6 +22,7 @@ from yolov5.utils.torch_utils import select_device, time_sync
 from yolov5.utils.plots import Annotator
 from deep_sort.utils.parser import get_config
 from deep_sort.deep_sort import DeepSort
+import deep_sort.sort.tracker as tracker
 
 # Communication
 # requests.post('http://localhost:4000/process/python_login', json={'id': 'police', 'password':'112'})
@@ -34,9 +35,10 @@ from deep_sort.deep_sort import DeepSort
 cam=True
 with_led_controller = True
 led_controller=LED_controller.Bluetooth() if with_led_controller else False
+tracker.led_controller=led_controller
 with_auto_parking=False # 자동주차
 automated_car=automated_car.Bluetooth() if with_auto_parking and cam else False
-address='192.168.137.99' # 직접 연결
+address='192.168.137.193' # 직접 연결
 #address='192.168.29.2' # 핫스팟
 with_socket_streaming=False
 socket_streaming=raspberry.Socket(address) if with_socket_streaming else False
@@ -65,7 +67,7 @@ width=40
 if cam: #165 290 410 510
     top_y=240
     bottom_y=300
-    parking_space=[[65,112,top_y,bottom_y],[185,226,top_y,bottom_y],[295,338,top_y,bottom_y],[409,453,top_y,bottom_y],[520,560,top_y,bottom_y]]
+    parking_space=[[65,112,top_y,bottom_y],[185,226,top_y,bottom_y],[295,338,top_y,bottom_y],[409,453,top_y,bottom_y],[530,570,top_y,bottom_y]]
     parked_list = [0, 0, 0, 0, 0]
     least = [0, 0, 0, 0, 0]
     # disappeared = [0, 0, 0, 0, 0]
@@ -86,7 +88,8 @@ elif source=="resource/my_video.mp4":
 # else:
 #     input = LoadImages(source, img_size=img_size, stride=stride, auto=pt)
 
-waiting_time = 0
+tracker.parked_list=parked_list
+waiting_times = [0]*len(parked_list)
 # initialize deepsort
 cfg = get_config()
 config_deepsort="deep_sort/configs/deep_sort.yaml"
@@ -106,6 +109,8 @@ led_counter = 0
 dic_least = {}
 min_index = -1
 parked_id = []
+flag = 0
+prev_total_count = 0
 
 leaving_case=Leaving_case(cam, led_controller, parking_space, parked_list)
 model.warmup(imgsz=(1, 3, *img_size))
@@ -131,7 +136,7 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
 
     # Inference
     pred = model.forward(image, augment=False, visualize=False) # prediction
-    pred = non_max_suppression(pred, 0.5, 0.5, classes, False, max_det=1000) # Apply NMS
+    pred = non_max_suppression(pred, 0.6, 0.5, classes, False, max_det=1000) # Apply NMS
 
     # Process detections
     for i, detection in enumerate(pred):  # Deepsort on detections in this frame
@@ -167,7 +172,7 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
                 color=[1,1,1] if output[9] else [ int(c) for c in COLORS[c%len(classes)] ] # Parked, not parked
                 annotator.box_label(bbox, label, color=color)
                 cv2.circle(image0, (int(output[10]), int(output[11])), 5, (255,255,0), -1) # 객체의 중앙 좌표
-                leaving_case.judge_leaving_car_by_YOLO((output[10], output[11]), names[c], elapsed_time) # YOLO로 헤드라이트 빛 감지
+                leaving_case.judge_leaving_car_by_YOLO((output[10], output[11]), names[c], elapsed_time, output[12]) # YOLO로 헤드라이트 빛 감지
                 if automated_car:
                     automated_car.update(id, (output[10], output[11]))
                 if names[c] == 'car':
@@ -185,19 +190,24 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
                     if names[c] == 'car' and (not (parking_space[k][0] <= output[10] <= parking_space[k][1]) or not( parking_space[k][2] <= output[11] <= parking_space[k][3])):
                         if parked_list[k] == -int(id) or parked_list[k] == int(id):
                             parked_id.append(abs(int(id)))
+                            min_index = -1
                             parked_list[k] = 0
                             print(f'{parked_list}parked')
                             if led_controller:
                                 led_controller.parking_state_determiner(k, parked_list[k])
-                    if parked_list[k] < 0 and names[c] == 'car' and parking_space[k][0] <= output[10] <= parking_space[k][1] and  parking_space[k][2] <= output[11] <= parking_space[k][3]:
-                        if waiting_time == 0:
-                            waiting_time = elapsed_time   
-                        elif elapsed_time - waiting_time > 5: # 출차예정 timeout 시간
-                            waiting_time = 0
-                            parked_list[k] = -parked_list[k]
-                            print(f'{parked_list}parked')
-                            if led_controller:
-                                led_controller.parking_state_determiner(k, parked_list[k])                                          
+                    if  names[c] == 'car' and parking_space[k][0] <= output[10] <= parking_space[k][1] and  parking_space[k][2] <= output[11] <= parking_space[k][3]:
+                        if not parked_list[k] < 0:
+                            waiting_times[k]=0
+                        else:
+                            if waiting_times[k] == 0:
+                                waiting_times[k] = elapsed_time
+                            elif elapsed_time - waiting_times[k] > 10: # 출차예정 timeout 시간
+                                waiting_times[k] = 0
+                                parked_list[k] = abs(parked_list[k])
+                                print(f'{parked_list}parked')
+                                if led_controller:
+                                    led_controller.parking_state_determiner(k, parked_list[k])  
+                            
                              
                     if names[c] == 'car' and int(id) not in parked_list and 3 < int(elapsed_time) and int(id) not in parked_id: # 입차예정 시간     
                         for i in range(len(parked_list)):
@@ -258,8 +268,8 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
             for i in range(len(parked_list)):
                 if abs(parked_list[i]) >= 1:
                     parked_count += 1   
-            if total_count - parked_count == 0:
-                parked_id.clear()
+            if prev_total_count > total_count and parked_id != []:
+                parked_id.clear() 
             if total_count - parked_count < len(entrance.keys()):
                 entrance.clear()
                 for i in range(len(parked_list)):
@@ -270,7 +280,63 @@ for frame_idx, (path, image, image0s, vid_cap, s) in enumerate(input): # Frames
                             led_controller.parking_state_determiner(i, parked_list[i])                       
                         print(f'{parked_list}parked')
             # print(f'entrance = {entrance} total_count - parked_count = {total_count - parked_count} parked_id = {parked_id} min_index = {min_index}')  
-
+            
+            # 6번째 LED
+            if len(parked_id) > 0 and parked_list.count(0) + parked_list.count(0.5) <= total_count - parked_count - len(parked_id):
+            # 출차하는 상황, 출차차량이 생겨서 주차면에 빈 자리가 생겼을 때 기다리고 있는 차량이 있으면
+                if flag == 0:
+                    print('red1')
+                    flag = 1
+                    if led_controller:
+                        led_controller.parking_state_determiner(5, 1)
+            elif 0 not in parked_list:
+            # 0이 없으면 즉, 빈 자리가 없으면
+                parked_sort = sorted(parked_list)
+                if parked_sort[0] < 0:
+                # 현재 주차면에서 출차예정이 있는지 판단
+                    if total_count - parked_count > parked_list.count(0.5):
+                    # 출차예정일때 기다리는 차량이 있다면
+                        if flag == 0: 
+                            print('red2')
+                            flag = 1
+                            if led_controller:
+                                led_controller.parking_state_determiner(5, 1)   
+                    # elif total_count == parked_count and flag == 1:
+                    elif total_count == parked_count + parked_list.count(0.5):
+                    # elif total_count == parked_count + parked_list.count(0.5):
+                    # 출차예정일때 기다리는 차량이 없다면
+                        if flag == 1:
+                            print('green1')
+                            flag = 0
+                            if led_controller:
+                                led_controller.parking_state_determiner(5, 0)
+ 
+                else:
+                # 출차예정이 없다면    
+                    if flag == 0:
+                        print('red3')
+                        flag = 1
+                        if led_controller:
+                            led_controller.parking_state_determiner(5, 1)   
+            elif 0 in parked_list:
+            # 빈자리가 있으면
+                if total_count - parked_count - len(parked_id) >= parked_list.count(0) + parked_list.count(0.5):
+                    # print(f'1_red {len(parked_id)}')
+                # 기다리는 차량이 있을 때 아직 입차예정으로 판단되지 않았을 때
+                    if flag == 0:
+                        print('red4')
+                        flag = 1
+                        if led_controller:
+                            led_controller.parking_state_determiner(5, 1)   
+                elif total_count - parked_count - len(parked_id) < parked_list.count(0) + parked_list.count(0.5):
+                    # print(f'2_green {len(parked_id)}')
+                # 빈 주차면이 있다면
+                    if flag == 1:
+                        print('green2')
+                        flag = 0
+                        if led_controller:
+                            led_controller.parking_state_determiner(5, 0) 
+            prev_total_count = total_count
 
         else: # No detection
             deepsort.increment_ages()

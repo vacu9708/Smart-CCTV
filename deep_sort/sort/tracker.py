@@ -6,7 +6,6 @@ from . import kalman_filter
 from . import linear_assignment
 from . import iou_matching
 from .track import Track
-import cv2
 
 '''class Parking_space_info:
         def __init__(self) -> None:
@@ -14,7 +13,8 @@ import cv2
             self.prev_brightness=123456789
             self.brightness=0
 parking_space_infos=[Parking_space_info() for i in range(5)]'''
-
+led_controller=0
+parked_list=[]
 class Tracker:
     """
     This is the multi-target tracker.
@@ -110,6 +110,10 @@ class Tracker:
             if self.tracks[i].is_deleted():   
                 # Delete this track
                 self.tracks[i].timer_alarm.timer_ended=True
+                if self.tracks[i].parking_space!=-1 and parked_list[self.tracks[i].parking_space]<0:
+                    parked_list[self.tracks[i].parking_space]=abs(parked_list[self.tracks[i].parking_space])
+                    led_controller.parking_state_determiner(self.tracks[i].parking_space,1)
+                    print(f'{parked_list}parked')
                 del self.tracks[i]
                 continue
             i+=1

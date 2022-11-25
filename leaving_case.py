@@ -31,7 +31,7 @@ class Leaving_case():
             if len(_parking_spaces)==5:
                 self.head_lights[4] = np.array([_parking_spaces[4][0]-10, _parking_spaces[4][1]+50, _parking_spaces[4][2]+30, _parking_spaces[4][3]+40])
 
-    def judge_leaving_car_by_YOLO(self, center, class_name, elapsed_time):
+    def judge_leaving_car_by_YOLO(self, center, class_name, elapsed_time, object):
         if not(class_name=='bright'):
             return
         # 헤드라이트가 있는 주차면 찾기
@@ -40,9 +40,10 @@ class Leaving_case():
             if self.head_lights[i][0]<=center[0]<=self.head_lights[i][1] and self.head_lights[i][2]<=center[1]<=self.head_lights[i][3]:
                 space=i
                 break
-        # 헤드라이트 위치가 주차면에 있지 않거나, 주차완료가 아니거나, 주차한지 얼마안됐거나
-        if space==99 or self.parked_list[space]<1 or self.timer.elapsed_times[space]<=4 or not 4<=elapsed_time<=5:
+        # self.timer.elapsed_times[space]는 주차완료후 출차예정을 인식할때까지의 시간이고, elased_time+1이상 +2이하
+        if space==99 or self.parked_list[space]<1 or self.timer.elapsed_times[space]<=4 or not 5<=elapsed_time<=6:
             return
+        object.parking_space=space
         self.parked_list[space] *= -1
         print(self.parked_list,"going out")
         if self.led_controller:

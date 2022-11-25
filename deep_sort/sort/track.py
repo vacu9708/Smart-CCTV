@@ -87,6 +87,7 @@ class Track:
         self._max_age = max_age
 
         # Custom code
+        self.parking_space=-1
         self.prev_mean=mean # For previous position
         self.slow_object=False
         self.timer_alarm=timer_alarm.Timer(self.slow_object)

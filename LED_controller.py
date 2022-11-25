@@ -5,7 +5,7 @@ class Bluetooth:
         self.arduino = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
         MAC = '98:D3:21:FC:94:10'
         self.arduino.connect((MAC,1))
-        for i in range(5):
+        for i in range(6):
             self.send(f'{i}1')
 
 

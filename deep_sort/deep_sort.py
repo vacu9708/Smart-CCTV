@@ -97,7 +97,7 @@ class DeepSort(object):
                 track.slow_object=False
            
             outputs.append(np.array([x1, y1, x2, y2, track_id, class_id, conf, 
-                            track.timer_alarm.elapsed_time, track.slow_object, track.changeColor, center_of_box[0], center_of_box[1]]))
+                            track.timer_alarm.elapsed_time, track.slow_object, track.changeColor, center_of_box[0], center_of_box[1], track]))
             track.prev_mean=track.mean # Use previous location to know if it's slow/
         if len(outputs) > 0:
             outputs = np.stack(outputs, axis=0)
