@@ -4,7 +4,7 @@
 ### 📷[Video](https://youtu.be/ZB2DopuROoM)
 
 # What this system is
-This system tracks cars and shows information for parking with LEDs in a parking lot.
+This system tracks cars and shows parking information with LEDs in a parking lot.
 It aims to decrease the time wasted when looking for a parking space.
 
 # 4 LED colors according to the situation
