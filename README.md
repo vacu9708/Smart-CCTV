@@ -7,6 +7,11 @@
 This system tracks cars and shows parking information with LEDs in a parking lot.
 It aims to decrease the time wasted when looking for a parking space.
 
+# How to decrease the wasted time
+We improved the existing system that only shows the availability of parking spaces.<br>
+In addition to its exisiting functionalities, our system also shows when cars are entering and leaving.<br>
+Notifying of incoming cars can prevent other cars from going to an occupied space. Notifying of leaving cars can guide other cars to available spots.
+
 # 4 LED colors according to the situation
 - Green: empty parking space
 - Red: unavailable parking space
