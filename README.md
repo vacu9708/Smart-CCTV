@@ -46,7 +46,7 @@ The time taken for the LED to be yellow after the headlight is turned on can be 
 # Flow chart
 ![image](https://user-images.githubusercontent.com/67142421/199558323-6e1d6e53-c543-4073-bb08-05d97789bbb2.png)
 
-# Team members and roles
-- 양영식: bluetooth communication for LEDs and car controlling, raspberry pi, algorithm for cars going out, YOLO image training
-- 이승종: Algorithm for situations of green, red, and orange LED
-- 김성혁: Hardware making
+# Team members and roles (All of the team members made an equal contribution)
+- 양영식: Bluetooth communication for LEDs and car controlling / algorithm for cars going out, YOLO image training
+- 이승종: Developed algorithm for the situations of green, red, and orange LED
+- 김성혁: In charge of hardware
