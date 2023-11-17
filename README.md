@@ -47,6 +47,6 @@ The time taken for the LED to be yellow after the headlight is turned on can be 
 ![image](https://user-images.githubusercontent.com/67142421/199558323-6e1d6e53-c543-4073-bb08-05d97789bbb2.png)
 
 # Team members and roles (All of the team members made an equal contribution)
-- 양영식: Bluetooth communication for LEDs and car controlling / algorithm for cars going out / image training for deep learning
+- 양영식: Rapsberry pi / Bluetooth communication for LEDs / car controlling / algorithm for cars going out / image training for deep learning
 - 이승종: Developed algorithm for the situations of green, red, and orange LED
 - 김성혁: In charge of hardware
