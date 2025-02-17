@@ -1,5 +1,5 @@
 # Parking lot information notifier(university graduation project)
-![image](https://github.com/vacu9708/Smart-CCTV/assets/67142421/37871923-bf0e-4cd0-9b4a-d54b8514b916)
+![image](https://github.com/user-attachments/assets/0a0629e3-3d1b-4a54-b849-c13489d608f3)
 
 ### 📷[Video](https://youtu.be/ZB2DopuROoM)
 
