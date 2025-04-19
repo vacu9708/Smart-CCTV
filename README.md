@@ -5,7 +5,7 @@
 
 # What this system is
 This system tracks cars and shows parking information with LEDs in a parking lot.
-It aims to decrease the time sted searching for a parking space.
+It aims to reduce the time spent searching for a parking space.
 
 # How to decrease the wasted time when a parking lot is congested
 We improved the existing parking guidance lights, which previously only showed the availability of parking spaces, by also displaying when cars are entering and leaving.
