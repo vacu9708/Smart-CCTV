@@ -5,26 +5,26 @@
 
 # What this system is
 This system tracks cars and shows parking information with LEDs in a parking lot.
-It aims to decrease the time wasted when looking for a parking space.
+It aims to decrease the time sted searching for a parking space.
 
 # How to decrease the wasted time when a parking lot is congested
-We improved the existing system that only shows the availability of parking spaces.<br>
-In addition to its exisiting functionalities, our system also shows when cars are entering and leaving.<br>
-Notifying of incoming cars can prevent other cars from going to an occupied space. Notifying of leaving cars can guide other cars to available spots.
+We improved the existing parking guidance lights, which previously only showed the availability of parking spaces, by also displaying when cars are entering and leaving.
+- Notifying drivers of incoming cars can prevent them from heading toward a space that's already being taken.
+- Notifying drivers of cars that are leaving can guide them to a space that will soon be available
 
 # 4 LED colors according to the situation
-- Green: empty parking space
+- Green: available parking space
 - Red: unavailable parking space
-- Orange: parking at this space
-- Yellow: going out of this space
+- Orange: entering this space
+- Yellow: leaving this space
 
 # Situations
-## A situation where a car is parking
+## Cars entering
 ![image](https://user-images.githubusercontent.com/67142421/199556685-d66c4c98-d992-4467-af05-c06ce614fa1f.png)
 The LED of the parking space closest to the car becomes orange.<br>
 The time taken for the LED to be orange when the car approaches a parking space can be adjusted to exclude cars that are just passing. 
 
-## A situation where a car is going out
+## Cars going out
 ![image](https://user-images.githubusercontent.com/67142421/199558068-28ba0193-6c84-4904-af59-bae415942bb6.png)
 When the headlight is turned on, the LED becomes yellow.<br>
 The time taken for the LED to be yellow after the headlight is turned on can be adjusted to prevent cars from waiting for the parking space to be available for too long. 
