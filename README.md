@@ -34,7 +34,7 @@ The delay before switching to yellow can be adjusted so drivers do not wait too 
 - YOLOv5 for object detection  
 - DeepSORT for object tracking  
 
-## Video Processing Pipeline (Python)
+## Video Processing Pipeline
 ![image](https://user-images.githubusercontent.com/67142421/199557014-d4a0cc30-5356-413c-bb54-4b832525a188.png)
 
 ## Hardware
