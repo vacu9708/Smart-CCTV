@@ -1,5 +1,5 @@
 # Parking Lot Information Notifier (University Graduation Project)
-![image](https://github.com/user-attachments/assets/0a0629e3-3d1b-4a54-b849-c13489d608f3)
+![graduation_project](https://github.com/user-attachments/assets/1a215525-d5aa-4253-aa3f-e0bdd4c1bad7)
 
 ### 📷 Video  
 https://youtu.be/ZB2DopuROoM
